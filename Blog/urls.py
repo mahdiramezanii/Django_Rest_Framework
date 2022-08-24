@@ -4,5 +4,6 @@ app_name="Home"
 urlpatterns=[
     path("",views.Home,name="home"),
     path("class",views.HomeClass.as_view(),name="class"),
-    path("test",views.test,name="test")
+    path("test",views.test,name="test"),
+    path("coin/",views.GetCriptoPrice.as_view(),name="coin")
 ]
