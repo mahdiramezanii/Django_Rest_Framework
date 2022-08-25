@@ -86,3 +86,28 @@ class AddArticle(APIView):
             return Response({"Response":"Done"})
 
         return Response(ser.errors)
+
+class UpdateArticle(APIView):
+
+    def put(self,request,pk):
+        instance=Article.objects.get(id=pk)
+        serializer=ArticleSerializers(instance=instance,data=request.data,partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+
+            return Response({"response":"Updated"})
+
+        else:
+            return Response(serializer.errors)
+
+class DeletArticle(APIView):
+
+    def delete(self,request,pk):
+        instance=Article.objects.get(id=pk)
+        instance.delete()
+        return Response({"response":"deleted"})
+
+
+
+

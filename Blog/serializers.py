@@ -13,7 +13,7 @@ from .models import Article
 #         return Article.objects.create(**validated_data)
 
 class ArticleSerializers(serializers.ModelSerializer):
-
+    text=serializers.CharField(write_only=True)
 
     class Meta:
         model=Article
