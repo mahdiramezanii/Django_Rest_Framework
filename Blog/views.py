@@ -4,6 +4,8 @@ from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 import requests
+from .serializers import ArticleSerializers
+from .models import Article
 
 @api_view(["POST","GET"])
 def Home(request):
@@ -41,7 +43,7 @@ class GetCriptoPrice(APIView):
     def get(self,request):
         url="https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"
         coin=request.GET.get("coin")
-        response=requests.get(f"https://api.binance.com/api/v3/ticker/price?symbol={coin.upper()}")
+        response=requests.get(f"https://api.binance.com/api/v3/ticker/price?symbol={coin}")
         result=response.json()
 
         data={
@@ -50,3 +52,37 @@ class GetCriptoPrice(APIView):
         }
 
         return Response(data=data)
+
+class ArticleView(APIView):
+
+
+    def get(self,request):
+
+        queryset=Article.objects.all()
+        data=ArticleSerializers(instance=queryset,many=True)
+
+        return Response(data=data.data)
+
+class ArticleDetail(APIView):
+
+    def get(self,request,pk):
+
+        queryset=Article.objects.get(id=pk)
+
+        serialaizer=ArticleSerializers(instance=queryset)
+
+        return Response(data=serialaizer.data)
+
+
+class AddArticle(APIView):
+
+    def post(self,request):
+        ser=ArticleSerializers(data=request.POST)
+
+        if ser.is_valid():
+            instance=ser.save()
+            instance.status=True
+            instance.save()
+            return Response({"Response":"Done"})
+
+        return Response(ser.errors)
